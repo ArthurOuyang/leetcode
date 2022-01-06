@@ -1,0 +1,35 @@
+class Solution {
+public:
+    // O(n)
+    bool carPooling(vector<vector<int>>& trips, int capacity) {
+        int ppl[1001];
+        memset(ppl, 0, sizeof(ppl));
+        for (int i = 0; i < trips.size(); ++ i) {
+            ppl[trips[i][1]] += trips[i][0];
+            ppl[trips[i][2]] -= trips[i][0];
+        }
+        
+        for (int i = 0; i <= 1000; ++ i) {
+            capacity -= ppl[i];
+            if (capacity < 0)
+                return false;
+        }
+        
+        return true;
+    }  
+    
+    // O(n^2)
+    bool carPooling2(vector<vector<int>>& trips, int capacity) {
+        int ppl[1001];
+        memset(ppl, 0, sizeof(ppl));
+        for (int i = 0; i < trips.size(); ++ i) {
+            for (int j = trips[i][1]; j < trips[i][2]; ++ j) {
+                ppl[j] += trips[i][0];
+                if (ppl[j] > capacity)
+                    return false;
+            }
+        }
+        
+        return true;
+    }
+};
