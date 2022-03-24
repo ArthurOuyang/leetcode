@@ -1,0 +1,22 @@
+class Solution {
+public:
+    bool findRotation(vector<vector<int>>& mat, vector<vector<int>>& target) {
+        vector<bool> rotations(4, true);
+        int n = mat.size();
+        
+        for (int i = 0; i < n; ++ i) {
+            for (int j = 0; j < n; ++ j) {
+                if (mat[i][j] != target[i][j])
+                    rotations[0] = false;
+                if (mat[i][j] != target[j][n - i - 1])
+                    rotations[1] = false;
+                if (mat[i][j] != target[n - i - 1][n - j - 1])
+                    rotations[2] = false;
+                if (mat[i][j] != target[n - j - 1][i])
+                    rotations[3] = false;
+            }
+        }
+        
+        return rotations[0] || rotations[1] || rotations[2] || rotations[3];
+    }
+};
