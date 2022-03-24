@@ -1,6 +1,6 @@
 class Solution {
 public:
-    // coordinate format
+    // coordinate format: raw solution
     vector<vector<int>> multiply(vector<vector<int>>& mat1, vector<vector<int>>& mat2) {
         vector<vector<int>> m1;
         vector<vector<int>> m2;
