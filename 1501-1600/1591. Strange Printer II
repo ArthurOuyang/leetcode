@@ -1,0 +1,81 @@
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef tuple<int, int> tii;
+typedef tuple<ll, ll> tl2;
+typedef tuple<ll, ll, ll> tl3;
+typedef tuple<ll, ll, ll, ll> tl4;
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef vector<string> vs;
+typedef vector<pii> vpii;
+typedef vector<vpii> vvpii;
+typedef vector<pll> vpll;
+typedef vector<vpll> vvpll;
+typedef vector<ll> vll;
+typedef vector<vll> vvll;
+typedef unordered_map<int, int> umpii;
+typedef unordered_set<int> ust;
+typedef vector<umpii> vumpii;
+typedef vector<ust> vust;
+
+class Solution {
+public:
+    bool isPrintable(vector<vector<int>>& tg) {
+        int m = tg.size(), n = tg[0].size();
+        vvi rect(61, {m, n, 0, 0});
+        vust G(61);
+        vi ins(61, 0);
+        ust st;
+        
+        for (int i = 0; i < m; ++ i) {
+            for (int j = 0; j < n; ++ j) {
+                int c = tg[i][j],
+                &v0 = rect[c][0], &v1 = rect[c][1], &v2 = rect[c][2], &v3 = rect[c][3];
+                st.insert(c);
+                v0 = min(v0, i);
+                v1 = min(v1, j);
+                v2 = max(v2, i);
+                v3 = max(v3, j);
+            }
+        }
+
+        for (int c : st) {
+            int &v0 = rect[c][0], &v1 = rect[c][1], &v2 = rect[c][2], &v3 = rect[c][3];
+            for (int i = v0; i <= v2; ++ i) {
+                for (int j = v1; j <= v3; ++ j) {
+                    int x = tg[i][j];
+                    if (x != c) {
+                        if (G[x].find(c) == G[x].end()) {
+                            G[x].insert(c);
+                            ++ ins[c];
+                        }
+                    }
+                }
+            }
+        }
+
+        queue<int> q;
+        for (int c : st) {
+            if (!ins[c])
+                q.push(c);
+        }
+
+        while (!q.empty()) {
+            int x = q.front();
+            q.pop();
+            for (int i : G[x]) {
+                -- ins[i];
+                if (!ins[i])
+                    q.push(i);
+            }
+        }
+
+        for (int c : st) {
+            if (ins[c] > 0)
+                return 0;
+        }        
+
+        return 1;
+    }
+};
