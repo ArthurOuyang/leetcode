@@ -18,7 +18,13 @@ typedef unordered_map<int, int> umpii;
 
 class Solution {
 public:
+    // Raw version for solving the problem
     vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& bi) {
+        for (int i = 0; i < n; ++ i) {
+            if (group[i] == -1)
+                group[i] = m++;
+        }
+        
         vector<int> insG(m+1, 0), insN(n, 0);
         vvi GG(m+1), GN(n);
         
