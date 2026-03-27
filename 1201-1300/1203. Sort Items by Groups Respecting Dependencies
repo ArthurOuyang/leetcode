@@ -1,0 +1,185 @@
+typedef long long ll;
+typedef pair<int, int> pii;
+typedef pair<ll, ll> pll;
+typedef tuple<int, int> tii;
+typedef tuple<ll, ll> tl2;
+typedef tuple<ll, ll, ll> tl3;
+typedef tuple<ll, ll, ll, ll> tl4;
+typedef vector<int> vi;
+typedef vector<vi> vvi;
+typedef vector<string> vs;
+typedef vector<pii> vpii;
+typedef vector<vpii> vvpii;
+typedef vector<pll> vpll;
+typedef vector<vpll> vvpll;
+typedef vector<ll> vll;
+typedef vector<vll> vvll;
+typedef unordered_map<int, int> umpii;
+
+class Solution {
+public:
+    vector<int> sortItems(int n, int m, vector<int>& group, vector<vector<int>>& bi) {
+        vector<int> insG(m+1, 0), insN(n, 0);
+        vvi GG(m+1), GN(n);
+        
+        int j = 0;
+        for (auto& v : bi) {
+            for (int i : v) {
+                int x = group[i], y = group[j];
+                if (x == y) {
+                    GN[i].push_back(j);
+                    ++ insN[j];
+                } else {
+                    GG[x+1].push_back(y+1);
+                    ++ insG[y+1];
+                }
+            }
+
+            ++ j;
+        }
+
+        queue<int> q;
+        vector<int> seq(m+1, 0), order(n, 0);
+        for (int i = 0; i <= m; ++ i)
+            if (!insG[i])
+                q.push(i);
+        
+        int s = 0;
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz --) {
+                int x = q.front();
+                seq[x] = s ++;
+                q.pop();
+                for (int i : GG[x]) {
+                    if (insG[i] == 1)
+                        q.push(i);
+                    -- insG[i];
+                }
+            }
+        }
+
+        for (int i = 0; i <= m; ++ i)
+            if (insG[i])
+                return {};
+        
+        for (int i = 0; i < n; ++ i)
+            if (!insN[i])
+                q.push(i);
+        
+        s = 0;
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz --) {
+                int x = q.front();
+                order[x] = s ++;
+                q.pop();
+                for (int i : GN[x]) {
+                    if (insN[i] == 1)
+                        q.push(i);
+                    -- insN[i];
+                }
+            }
+        }   
+
+        for (int i = 0; i < n; ++ i)
+            if (insN[i])
+                return {};    
+
+        vpii vp;
+        for (int i = 0; i < n; ++ i)
+            vp.emplace_back(group[i]+1, i);
+        
+        sort(begin(vp), end(vp), [&](const pii a, const pii b) {
+            return seq[a.first] == seq[b.first] ? order[a.second] < order[b.second] : seq[a.first] < seq[b.first];
+        });
+
+        vector<int> ans(n);
+        for (int i = 0; i < n; ++ i)
+            ans[i] = vp[i].second;
+        return ans;
+    }
+
+    // this will work if we treat -1 as a group
+    vector<int> sortItems2(int n, int m, vector<int>& group, vector<vector<int>>& bi) {
+        vector<int> insG(m+1, 0), insN(n, 0);
+        vvi GG(m+1), GN(n);
+        
+        int j = 0;
+        for (auto& v : bi) {
+            for (int i : v) {
+                int x = group[i], y = group[j];
+                if (x == y) {
+                    GN[i].push_back(j);
+                    ++ insN[j];
+                } else {
+                    GG[x+1].push_back(y+1);
+                    ++ insG[y+1];
+                }
+            }
+
+            ++ j;
+        }
+
+        queue<int> q;
+        vector<int> seq(m+1, 0), order(n, 0);
+        for (int i = 0; i <= m; ++ i)
+            if (!insG[i])
+                q.push(i);
+        
+        int s = 0;
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz --) {
+                int x = q.front();
+                seq[x] = s ++;
+                q.pop();
+                for (int i : GG[x]) {
+                    if (insG[i] == 1)
+                        q.push(i);
+                    -- insG[i];
+                }
+            }
+        }
+
+        for (int i = 0; i <= m; ++ i)
+            if (insG[i])
+                return {};
+        
+        for (int i = 0; i < n; ++ i)
+            if (!insN[i])
+                q.push(i);
+        
+        s = 0;
+        while (!q.empty()) {
+            int sz = q.size();
+            while (sz --) {
+                int x = q.front();
+                order[x] = s ++;
+                q.pop();
+                for (int i : GN[x]) {
+                    if (insN[i] == 1)
+                        q.push(i);
+                    -- insN[i];
+                }
+            }
+        }   
+
+        for (int i = 0; i < n; ++ i)
+            if (insN[i])
+                return {};    
+
+        vpii vp;
+        for (int i = 0; i < n; ++ i)
+            vp.emplace_back(group[i]+1, i);
+        
+        sort(begin(vp), end(vp), [&](const pii a, const pii b) {
+            return seq[a.first] == seq[b.first] ? order[a.second] < order[b.second] : seq[a.first] < seq[b.first];
+        });
+
+        vector<int> ans(n);
+        for (int i = 0; i < n; ++ i)
+            ans[i] = vp[i].second;
+        return ans;
+    }
+};
